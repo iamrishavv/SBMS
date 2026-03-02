@@ -1,0 +1,85 @@
+// Engine Interface
+package in.rishav.beans;
+
+public interface IEngine {
+    boolean start();
+}
+//Diesel Class
+package in.rishav.beans;
+
+public class DieselEng implements IEngine{
+    public DieselEng() {
+        System.out.println("DieselEng :: Constructor");
+    }
+
+    @Override
+    public boolean start() {
+        System.out.println("DieselEng starting...");
+        return true;
+    }
+}
+//Petrol Class
+package in.rishav.beans;
+
+public class PetrolEng implements IEngine{
+    public PetrolEng() {
+        System.out.println("PetrolEng :: Constructor");
+    }
+
+    @Override
+    public boolean start() {
+        System.out.println("PetrolEng starting...");
+        return true;
+    }
+}
+//Car Class
+package in.rishav.beans;
+
+public class Car {
+    private IEngine eng;
+    public Car(){
+        System.out.println("Car :: Constructor");
+    }
+    //setter Injection
+    public void setEng(IEngine eng) {
+        this.eng = eng;
+    }
+    public void drive() {
+        if (eng.start()) {
+            System.out.println("Journey Started...");
+        } else {
+            System.out.println("Engine fault...");
+        }
+    }
+}
+
+//appliactionContext.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="petrol" class="in.rishav.beans.PetrolEng"/>
+    <bean id="diesel" class="in.rishav.beans.DieselEng"/>
+
+    <bean id="car" class="in.rishav.beans.Car">
+        <property name="eng" ref="diesel"/><!--can change to petrol!-->
+    </bean>
+
+</beans>
+
+//Test class
+package in.rishav.beans;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Test {
+    public static void main(String[] args) {
+        //Ioc container is created and XML file is read
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+        Car car = ctx.getBean(Car.class);
+        car.drive();
+    }
+}
