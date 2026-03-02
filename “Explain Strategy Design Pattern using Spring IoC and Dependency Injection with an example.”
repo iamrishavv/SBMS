@@ -1,0 +1,128 @@
+// IPayment.java
+package in.rishav.beans;
+
+public interface IPayment {
+    boolean pay(double amount);
+}
+// CashPayment.java
+package in.rishav.beans;
+
+public class CashPayment implements IPayment {
+
+    public CashPayment() {
+        System.out.println("CashPayment :: Constructor");
+    }
+
+    @Override
+    public boolean pay(double amount) {
+        System.out.println("Paid ₹" + amount + " using Cash");
+        return true;
+    }
+}
+// ScannerPayment.java
+package in.rishav.beans;
+
+public class ScannerPayment implements IPayment {
+
+    public ScannerPayment() {
+        System.out.println("ScannerPayment :: Constructor");
+    }
+
+    @Override
+    public boolean pay(double amount) {
+        System.out.println("Paid ₹" + amount + " using Scanner");
+        return true;
+    }
+}
+// DebitCardPayment.java
+package in.rishav.beans;
+
+public class DebitCardPayment implements IPayment {
+
+    public DebitCardPayment() {
+        System.out.println("DebitCardPayment :: Constructor");
+    }
+
+    @Override
+    public boolean pay(double amount) {
+        System.out.println("Paid ₹" + amount + " using Debit Card");
+        return true;
+    }
+}
+// CreditCardPayment.java
+package in.rishav.beans;
+
+public class CreditCardPayment implements IPayment {
+
+    public CreditCardPayment() {
+        System.out.println("CreditCardPayment :: Constructor");
+    }
+
+    @Override
+    public boolean pay(double amount) {
+        System.out.println("Paid ₹" + amount + " using Credit Card");
+        return true;
+    }
+}
+// BillPayment.java
+package in.rishav.beans;
+
+public class BillPayment {
+
+    private IPayment payment;
+
+    public BillPayment() {
+        System.out.println("BillPayment :: Constructor");
+    }
+
+    // Setter Injection
+    public void setPayment(IPayment payment) {
+        this.payment = payment;
+        System.out.println("setPayment() called");
+        System.out.println("Injected :: " + payment.getClass().getName());
+    }
+
+    public void processBill(double amount) {
+        if (payment.pay(amount)) {
+            System.out.println("Bill Payment Successful");
+        } else {
+            System.out.println("Bill Payment Failed");
+        }
+    }
+}
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Payment strategy beans -->
+    <bean id="cash" class="in.rishav.beans.CashPayment"/>
+    <bean id="scanner" class="in.rishav.beans.ScannerPayment"/>
+    <bean id="debit" class="in.rishav.beans.DebitCardPayment"/>
+    <bean id="credit" class="in.rishav.beans.CreditCardPayment"/>
+
+    <!-- BillPayment bean with setter injection -->
+    <bean id="billPayment" class="in.rishav.beans.BillPayment">
+        <!-- Change ref to switch payment mode -->
+        <property name="payment" ref="scanner"/>
+    </bean>
+
+</beans>
+// Test.java
+package in.rishav.beans;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Test {
+    public static void main(String[] args) {
+
+        // IoC container is created and XML is read
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+        BillPayment billPayment = ctx.getBean(BillPayment.class);
+        billPayment.processBill(1500);
+    }
+}
