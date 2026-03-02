@@ -1,0 +1,73 @@
+//Interface Strategy 
+public interface IPayment {
+    boolean pay(double amount);
+}
+//Concrete Strategy – Cash
+public class CashPayment implements IPayment {
+
+    @Override
+    public boolean pay(double amount) {
+        System.out.println("Paid ₹" + amount + " using Cash");
+        return true;
+    }
+}
+//Concrete Strategy – Scanner
+public class ScannerPayment implements IPayment {
+
+    @Override
+    public boolean pay(double amount) {
+        System.out.println("Paid ₹" + amount + " using Scanner");
+        return true;
+    }
+}
+//Concrete Strategy - Debit card
+public class DebitCardPayment implements IPayment {
+
+    @Override
+    public boolean pay(double amount) {
+        System.out.println("Paid ₹" + amount + " using Debit Card");
+        return true;
+    }
+//Concrete strategy - Credit card
+public class CreditCardPayment implements IPayment {
+
+    @Override
+    public boolean pay(double amount) {
+        System.out.println("Paid ₹" + amount + " using Credit Card");
+        return true;
+    }
+}
+//Context Class (PaymentProcessor)
+public class PaymentProcessor {
+
+    private IPayment payment;   // interface reference
+
+    // constructor injection
+    public PaymentProcessor(IPayment payment) {
+        this.payment = payment;
+    }
+
+    public void processPayment(double amount) {
+        payment.pay(amount);
+    }
+
+    public static void main(String[] args) {
+
+        PaymentProcessor p1 =
+                new PaymentProcessor(new CashPayment());
+        p1.processPayment(500);
+
+        PaymentProcessor p2 =
+                new PaymentProcessor(new ScannerPayment());
+        p2.processPayment(1200);
+
+        PaymentProcessor p3 =
+                new PaymentProcessor(new DebitCardPayment());
+        p3.processPayment(2000);
+
+        PaymentProcessor p4 =
+                new PaymentProcessor(new CreditCardPayment());
+        p4.processPayment(3500);
+    }
+}
+}
