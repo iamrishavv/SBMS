@@ -1,0 +1,8 @@
+// Concrete Strategy 2
+public class DieselEng implements Engine {
+    @Override
+    public int start() {
+        System.out.println("Diesel Engine started");
+        return 1;
+    }
+}
