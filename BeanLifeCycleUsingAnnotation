@@ -1,0 +1,49 @@
+1️⃣ Bean Class
+package in.rishav.springbootdemo;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+
+    public Car() {
+        System.out.println("1. Bean Instantiated (Constructor Called)");
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("2. Bean Initialization (@PostConstruct)");
+    }
+
+    public void drive() {
+        System.out.println("3. Bean is ready to use");
+    }
+
+    @PreDestroy
+    public void destroy() {
+        System.out.println("4. Bean Destroyed (@PreDestroy)");
+    }
+}
+2️⃣ Main Class
+package in.rishav.springbootdemo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+
+@SpringBootApplication
+public class SpringbootDemoApplication {
+
+    public static void main(String[] args) {
+
+        ConfigurableApplicationContext context =
+                SpringApplication.run(SpringbootDemoApplication.class, args);
+
+        Car car = context.getBean(Car.class);
+        car.drive();
+
+        context.close();
+    }
+}
