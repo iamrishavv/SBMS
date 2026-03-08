@@ -1,0 +1,165 @@
+SOLID Principles (Tabular Explanation)
+Principle	Full Form	Meaning	Simple Idea
+S	Single Responsibility Principle	A class should have only one responsibility	One class → one job
+O	Open Closed Principle	Classes should be open for extension but closed for modification	Extend behavior without changing existing code
+L	Liskov Substitution Principle	Child classes should replace parent classes without breaking code	Subclasses must behave like parent
+I	Interface Segregation Principle	Clients should not depend on interfaces they don’t use	Small specific interfaces
+D	Dependency Inversion Principle	High-level modules should depend on abstractions, not concrete classes	Depend on interfaces
+1️⃣ Single Responsibility Principle (SRP)
+
+A class should do only one thing.
+
+❌ Bad Example
+
+class UserService {
+
+    public void saveUser() {
+        // save user
+    }
+
+    public void sendEmail() {
+        // send email
+    }
+}
+
+This class has two responsibilities.
+
+✔ Good Example
+
+class UserService {
+    public void saveUser() {}
+}
+
+class EmailService {
+    public void sendEmail() {}
+}
+
+Each class now has one responsibility.
+
+2️⃣ Open Closed Principle (OCP)
+
+Software entities should be open for extension but closed for modification.
+
+❌ Bad Example
+
+class PaymentService {
+
+    public void pay(String type) {
+
+        if(type.equals("CreditCard")) {
+            // logic
+        }
+
+        if(type.equals("UPI")) {
+            // logic
+        }
+    }
+}
+
+Each new payment type requires modifying the class.
+
+✔ Good Example
+
+interface Payment {
+    void pay();
+}
+
+class CreditCardPayment implements Payment {
+    public void pay() {}
+}
+
+class UpiPayment implements Payment {
+    public void pay() {}
+}
+
+Now we can add new payment methods without modifying existing code.
+
+3️⃣ Liskov Substitution Principle (LSP)
+
+Child classes should replace parent classes without breaking functionality.
+
+❌ Bad Example
+
+class Bird {
+    void fly(){}
+}
+
+class Penguin extends Bird {
+    void fly(){
+        throw new RuntimeException("Cannot fly");
+    }
+}
+
+Penguin cannot fly → breaks behavior.
+
+✔ Good Design
+
+class Bird {}
+
+class FlyingBird extends Bird {
+    void fly(){}
+}
+
+class Penguin extends Bird {}
+4️⃣ Interface Segregation Principle (ISP)
+
+Interfaces should be small and specific.
+
+❌ Bad Example
+
+interface Worker {
+
+    void work();
+    void eat();
+}
+
+Robot workers don't eat.
+
+✔ Good Example
+
+interface Workable {
+    void work();
+}
+
+interface Eatable {
+    void eat();
+}
+
+Now classes implement only what they need.
+
+5️⃣ Dependency Inversion Principle (DIP)
+
+High-level modules should depend on abstractions (interfaces), not concrete classes.
+
+❌ Bad Example
+
+class Car {
+
+    Engine engine = new Engine();
+
+}
+
+Car directly depends on Engine.
+
+✔ Good Example
+
+interface Engine {
+    void start();
+}
+
+class PetrolEngine implements Engine {
+    public void start(){}
+}
+
+class Car {
+
+    Engine engine;
+
+    Car(Engine engine){
+        this.engine = engine;
+    }
+}
+
+Now Car depends on Engine interface, not a specific implementation.
+
+This principle is heavily used in Spring Dependency Injection (@Autowired).
