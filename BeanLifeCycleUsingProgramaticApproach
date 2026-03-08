@@ -1,0 +1,49 @@
+1️⃣ Bean Class Using Interfaces
+package in.rishav.springbootdemo;
+
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car implements InitializingBean, DisposableBean {
+
+    public Car() {
+        System.out.println("1. Bean Instantiated (Constructor)");
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        System.out.println("2. Bean Initialization (afterPropertiesSet)");
+    }
+
+    public void drive() {
+        System.out.println("3. Car is ready to drive");
+    }
+
+    @Override
+    public void destroy() {
+        System.out.println("4. Bean Destroyed (destroy method)");
+    }
+}
+2️⃣ Main Class
+package in.rishav.springbootdemo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+
+@SpringBootApplication
+public class SpringbootDemoApplication {
+
+    public static void main(String[] args) {
+
+        ConfigurableApplicationContext context =
+                SpringApplication.run(SpringbootDemoApplication.class, args);
+
+        Car car = context.getBean(Car.class);
+        car.drive();
+
+        context.close();
+    }
+}
