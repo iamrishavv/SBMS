@@ -1,0 +1,74 @@
+In Spring Data JPA, sometimes findBy methods are not enough for complex queries.
+In such cases we use Custom Queries using the @Query annotation.
+
+Custom queries allow us to write JPQL or SQL manually.
+
+1️⃣ What is a Custom Query?
+
+A custom query is a query written manually using @Query inside the repository interface.
+
+Example:
+
+@Query("select e from Employee e")
+List<Employee> getEmployees();
+2️⃣ Employee Entity Example
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue
+    private Integer empId;
+
+    private String empName;
+    private Double salary;
+    private String dept;
+
+}
+3️⃣ Repository with Custom Query
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+
+public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
+
+    @Query("from Employee")
+    List<Employee> getAllEmployees();
+
+}
+
+This query retrieves all employee records.
+
+4️⃣ Custom Query with Condition
+
+Example: Get employees from Sales department
+
+@Query("from Employee where dept=:dname")
+List<Employee> getEmployeesByDept(String dname);
+5️⃣ Using the Method
+List<Employee> list = repo.getEmployeesByDept("Sales");
+
+for(Employee e : list){
+    System.out.println(e.getEmpName());
+}
+
+Generated query:
+
+select * from employee where dept='Sales'
+6️⃣ Native SQL Query
+
+Sometimes we use pure SQL instead of JPQL.
+
+@Query(value="select * from employee where dept=?", nativeQuery=true)
+List<Employee> getEmployeesByDept(String dept);
+
+Here:
+
+nativeQuery = true
+
+means use SQL query instead of JPQL.
+
+7️⃣ JPQL vs SQL
+Feature	JPQL	Native SQL
+Works on	Entity class	Database table
+Example	from Employee	select * from employee
+Portable	Yes	No
