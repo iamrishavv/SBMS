@@ -1,0 +1,62 @@
+In Spring Data JPA, we can retrieve records based on non-primary columns using findBy methods.
+
+Spring Data JPA automatically generates SQL queries based on method names.
+
+Syntax
+findBy<ColumnName>(parameters)
+
+Example:
+
+findByEmpDept(String dept)
+
+Here:
+
+findBy → keyword
+
+EmpDept → column name
+
+String dept → parameter
+
+1️⃣ Employee Entity Example
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue
+    private Integer empId;
+
+    private String empName;
+    private Double salary;
+    private String empDept;
+
+}
+2️⃣ Repository Interface
+package com.example.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.entity.Employee;
+
+import java.util.List;
+
+public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
+
+    List<Employee> findByEmpDept(String empDept);
+
+}
+
+Spring Data JPA automatically generates query like:
+
+select * from employee where emp_dept = ?
+3️⃣ Using the Method
+@Autowired
+private EmployeeRepository repo;
+
+public void test() {
+
+    List<Employee> list = repo.findByEmpDept("IT");
+
+    for(Employee e : list){
+        System.out.println(e.getEmpName());
+    }
+
+}
