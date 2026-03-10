@@ -72,3 +72,59 @@ Feature	JPQL	Native SQL
 Works on	Entity class	Database table
 Example	from Employee	select * from employee
 Portable	Yes	No
+
+
+Yes 👍 In Spring Data JPA, Custom Queries are mainly divided into two types:
+
+1) SQL Queries (Native Queries)
+2) HQL / JPQL Queries
+1️⃣ SQL Queries (Native Query)
+
+These are database queries written using SQL syntax.
+
+They work directly with database tables and column names.
+
+Example
+@Query(value="select * from employee where dept='Sales'", nativeQuery=true)
+List<Employee> getSalesEmployees();
+
+Here:
+
+nativeQuery = true
+
+means this is a SQL query.
+
+Generated SQL:
+
+select * from employee where dept='Sales';
+2️⃣ HQL / JPQL Queries
+
+HQL (Hibernate Query Language) or JPQL works with Entity classes instead of table names.
+
+It uses class names and field names.
+
+Example
+@Query("from Employee where dept='Sales'")
+List<Employee> getSalesEmployees();
+
+Here:
+
+Employee → Entity class
+dept → field name
+
+Generated SQL internally:
+
+select * from employee where dept='Sales';
+📊 Difference Between SQL and HQL
+Feature	SQL Query	HQL / JPQL
+Works on	Database table	Entity class
+Uses	table & column names	class & field names
+Portability	Database dependent	Database independent
+Annotation	nativeQuery=true	default
+Example with Parameter
+HQL Example
+@Query("from Employee where dept=:dept")
+List<Employee> getEmployees(String dept);
+SQL Example
+@Query(value="select * from employee where dept=?", nativeQuery=true)
+List<Employee> getEmployees(String dept);
