@@ -1,0 +1,51 @@
+CrudRepository vs JpaRepository
+
+Both are part of Spring Data JPA and are used to perform database operations.
+
+1️⃣ CrudRepository
+
+Provides basic CRUD operations.
+
+Example:
+
+public interface StudentRepository extends CrudRepository<Student, Integer> {
+}
+Main Methods
+Method	Work
+save()	insert / update
+findById()	fetch record by id
+findAll()	get all records
+deleteById()	delete record
+count()	count rows
+existsById()	check record exists
+
+Return type of findAll():
+
+Iterable<T>
+2️⃣ JpaRepository
+
+JpaRepository extends CrudRepository, so it has all CRUD methods + extra features.
+
+Example:
+
+public interface StudentRepository extends JpaRepository<Student, Integer> {
+}
+Additional Methods
+Method	Work
+findAll()	returns List
+flush()	sync with DB
+saveAndFlush()	save and commit immediately
+deleteInBatch()	delete multiple records
+findAll(Pageable p)	pagination
+
+Return type of findAll():
+
+List<T>
+📊 Difference Table
+Feature	CrudRepository	JpaRepository
+Basic CRUD	✅	✅
+Pagination	❌	✅
+Batch operations	❌	✅
+flush() support	❌	✅
+findAll() return type	Iterable	List
+Used in projects	Less	Most common
