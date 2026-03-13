@@ -1,0 +1,186 @@
+Below is a complete Spring Boot + Spring Data JPA example showing QBE (Query By Example), Sorting, and Pagination using an Employee table.
+
+Using Spring Boot and Spring Data JPA.
+
+1️⃣ pom.xml
+<dependencies>
+
+<dependency>
+ <groupId>org.springframework.boot</groupId>
+ <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+
+<dependency>
+ <groupId>com.mysql</groupId>
+ <artifactId>mysql-connector-j</artifactId>
+</dependency>
+
+</dependencies>
+2️⃣ application.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/sbms36
+spring.datasource.username=root
+spring.datasource.password=root
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+3️⃣ Employee Entity
+package com.example.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="employee")
+public class Employee {
+
+    @Id
+    @GeneratedValue
+    private Integer empId;
+
+    private String empName;
+    private String empDept;
+    private String empGender;
+    private Double salary;
+
+    public Employee() {}
+
+    public Integer getEmpId() {
+        return empId;
+    }
+
+    public String getEmpName() {
+        return empName;
+    }
+
+    public String getEmpDept() {
+        return empDept;
+    }
+
+    public String getEmpGender() {
+        return empGender;
+    }
+
+    public Double getSalary() {
+        return salary;
+    }
+
+    public void setEmpName(String empName) {
+        this.empName = empName;
+    }
+
+    public void setEmpDept(String empDept) {
+        this.empDept = empDept;
+    }
+
+    public void setEmpGender(String empGender) {
+        this.empGender = empGender;
+    }
+
+    public void setSalary(Double salary) {
+        this.salary = salary;
+    }
+
+    @Override
+    public String toString() {
+        return empId + " " + empName + " " + empDept + " " + empGender + " " + salary;
+    }
+}
+4️⃣ Repository
+package com.example.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.entity.Employee;
+
+public interface EmployeeRepository extends JpaRepository<Employee,Integer>{
+
+}
+5️⃣ Service Class
+package com.example.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.Service;
+
+import com.example.entity.Employee;
+import com.example.repository.EmployeeRepository;
+
+@Service
+public class EmployeeService {
+
+    @Autowired
+    private EmployeeRepository empRepo;
+
+
+    // Query By Example
+    public void getEmpsByQBE() {
+
+        Employee emp = new Employee();
+
+        emp.setEmpDept("Marketing");
+        emp.setEmpGender("Male");
+        emp.setEmpName("Ruther");
+
+        Example<Employee> example = Example.of(emp);
+
+        List<Employee> list = empRepo.findAll(example);
+
+        list.forEach(System.out::println);
+    }
+
+
+    // Sorting
+    public void getEmpsWithSort(String column) {
+
+        Sort sort = Sort.by(column).descending();
+
+        Iterable<Employee> list = empRepo.findAll(sort);
+
+        list.forEach(System.out::println);
+    }
+
+
+    // Pagination
+    public void getEmpsWithPagination(int pageSize, int pageNo) {
+
+        PageRequest pageRequest = PageRequest.of(pageNo - 1, pageSize);
+
+        Page<Employee> page = empRepo.findAll(pageRequest);
+
+        List<Employee> content = page.getContent();
+
+        content.forEach(System.out::println);
+    }
+
+}
+6️⃣ Main Application
+package com.example;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import com.example.service.EmployeeService;
+
+import jakarta.annotation.PostConstruct;
+
+@SpringBootApplication
+public class DataJpaApplication {
+
+    @Autowired
+    private EmployeeService service;
+
+    public static void main(String[] args) {
+        SpringApplication.run(DataJpaApplication.class, args);
+    }
+
+    @PostConstruct
+    public void test(){
+
+        service.getEmpsByQBE();
+
+        service.getEmpsWithSort("salary");
+
+        service.getEmpsWithPagination(3,1);
+    }
+}
