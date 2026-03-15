@@ -1,0 +1,55 @@
+1️⃣ Entity Class
+import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue(generator = "emp_gen")
+    @GenericGenerator(
+            name = "emp_gen",
+            strategy = "com.example.generator.EmployeeIdGenerator"
+    )
+    private String empId;
+
+    private String empName;
+
+    public String getEmpId() {
+        return empId;
+    }
+
+    public String getEmpName() {
+        return empName;
+    }
+
+    public void setEmpName(String empName) {
+        this.empName = empName;
+    }
+}
+2️⃣ Custom Generator Class
+package com.example.generator;
+
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.id.IdentifierGenerator;
+
+import java.io.Serializable;
+
+public class EmployeeIdGenerator implements IdentifierGenerator {
+
+    private static int counter = 1;
+
+    @Override
+    public Serializable generate(SharedSessionContractImplementor session, Object object) {
+
+        String prefix = "EMP";
+        String id = prefix + String.format("%03d", counter++);
+
+        return id;
+    }
+}
+3️⃣ Saving Data
+Employee e1 = new Employee();
+e1.setEmpName("Rishav");
+
+repo.save(e1);
