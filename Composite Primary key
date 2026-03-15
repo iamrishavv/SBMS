@@ -1,0 +1,79 @@
+Example table:
+
+student_course
+-------------------------
+student_id
+course_id
+enrolled_date
+
+Here the primary key = student_id + course_id.
+
+This means the combination must be unique.
+
+Used in Spring Data JPA and Hibernate ORM.
+
+Two Ways to Create Composite PK in JPA
+
+1️⃣ @IdClass
+2️⃣ @EmbeddedId
+
+1️⃣ Using @IdClass
+Step 1 — Primary Key Class
+import java.io.Serializable;
+
+public class StudentCourseId implements Serializable {
+
+    private Integer studentId;
+    private Integer courseId;
+
+}
+Step 2 — Entity Class
+import jakarta.persistence.*;
+
+@Entity
+@IdClass(StudentCourseId.class)
+public class StudentCourse {
+
+    @Id
+    private Integer studentId;
+
+    @Id
+    private Integer courseId;
+
+    private String enrolledDate;
+
+}
+
+Now the primary key is:
+
+studentId + courseId
+2️⃣ Using @EmbeddedId (Recommended)
+Step 1 — Embeddable Key Class
+import jakarta.persistence.Embeddable;
+import java.io.Serializable;
+
+@Embeddable
+public class StudentCourseId implements Serializable {
+
+    private Integer studentId;
+    private Integer courseId;
+
+}
+Step 2 — Entity Class
+import jakarta.persistence.*;
+
+@Entity
+public class StudentCourse {
+
+    @EmbeddedId
+    private StudentCourseId id;
+
+    private String enrolledDate;
+
+}
+Table Structure
+student_course
+-------------------------
+student_id  (PK)
+course_id   (PK)
+enrolled_date
