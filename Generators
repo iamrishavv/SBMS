@@ -1,0 +1,92 @@
+In Spring Data JPA / Hibernate ORM, Generators are used to automatically generate primary key values for entity objects.
+
+Instead of manually setting the ID, the framework generates it automatically.
+
+1️⃣ @GeneratedValue Annotation
+
+The most common way to generate IDs.
+
+Example:
+
+@Id
+@GeneratedValue
+private Integer empId;
+
+This tells JPA:
+
+Automatically generate primary key value
+2️⃣ Types of Generators
+
+@GeneratedValue supports several strategies.
+
+Strategy	Description
+AUTO	JPA chooses best strategy
+IDENTITY	Database auto-increment
+SEQUENCE	Uses database sequence
+TABLE	Uses separate table for ID generation
+3️⃣ AUTO Strategy
+@Id
+@GeneratedValue(strategy = GenerationType.AUTO)
+private Integer id;
+
+JPA automatically decides which method to use.
+
+4️⃣ IDENTITY Strategy
+
+Commonly used with MySQL.
+
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Integer id;
+
+Database generates ID using AUTO_INCREMENT.
+
+Example SQL table:
+
+id INT AUTO_INCREMENT PRIMARY KEY
+5️⃣ SEQUENCE Strategy
+
+Used mainly in Oracle / PostgreSQL.
+
+@Id
+@GeneratedValue(strategy = GenerationType.SEQUENCE)
+private Integer id;
+
+It uses a database sequence object.
+
+6️⃣ TABLE Strategy
+
+Uses a separate table to store ID values.
+
+@Id
+@GeneratedValue(strategy = GenerationType.TABLE)
+private Integer id;
+
+Less commonly used.
+
+Example Entity
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer empId;
+
+    private String empName;
+}
+How It Works
+
+When inserting:
+
+insert into employee(emp_name) values ('Rishav');
+
+Database automatically generates:
+
+emp_id = 1
+
+Next record:
+
+emp_id = 2
+Short Interview Answer
+
+Generators in JPA are used to automatically generate primary key values using @GeneratedValue with strategies like AUTO, IDENTITY, SEQUENCE, and TABLE.
