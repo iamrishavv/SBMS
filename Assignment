@@ -1,0 +1,99 @@
+1️⃣ Insert Record Using Custom Query
+Entity
+@Entity
+@Table(name="employee")
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer empId;
+
+    private String empName;
+    private String empDept;
+    private Double salary;
+}
+Repository
+public interface EmployeeRepository extends JpaRepository<Employee,Integer>{
+
+    @Transactional
+    @Modifying
+    @Query(value="insert into employee(emp_name,emp_dept,salary) values(?1,?2,?3)", nativeQuery=true)
+    void insertEmployee(String name,String dept,Double salary);
+
+}
+Usage
+repo.insertEmployee("Rishav","IT",50000.0);
+2️⃣ Custom Query with Projection
+
+Projection means retrieving only selected columns instead of full entity.
+
+Projection Interface
+public interface EmpProjection {
+
+    String getEmpName();
+    String getEmpDept();
+
+}
+Repository Query
+@Query("select e.empName as empName, e.empDept as empDept from Employee e")
+List<EmpProjection> getEmployeeDetails();
+Usage
+List<EmpProjection> list = repo.getEmployeeDetails();
+
+list.forEach(e -> {
+    System.out.println(e.getEmpName()+" "+e.getEmpDept());
+});
+
+Output:
+
+Rishav IT
+Rahul Sales
+3️⃣ Custom Generator Using Oracle Database
+
+Oracle commonly uses SEQUENCE.
+
+Sequence Generator
+@Entity
+public class Employee {
+
+    @Id
+    @SequenceGenerator(
+            name="emp_seq",
+            sequenceName="emp_sequence",
+            allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="emp_seq")
+    private Integer empId;
+
+    private String empName;
+}
+Oracle SQL
+CREATE SEQUENCE emp_sequence START WITH 1 INCREMENT BY 1;
+4️⃣ Custom Generator Using MySQL Database
+
+MySQL uses AUTO_INCREMENT (IDENTITY).
+
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer empId;
+
+    private String empName;
+}
+
+Table structure:
+
+CREATE TABLE employee(
+emp_id INT AUTO_INCREMENT PRIMARY KEY,
+emp_name VARCHAR(50)
+);
+
+Now MySQL automatically generates IDs.
+
+Assignment Summary
+Task	Solution
+Insert using custom query	@Query + @Modifying + @Transactional
+Projection	Interface-based projection
+Oracle generator	@SequenceGenerator
+MySQL generator	GenerationType.IDENTITY
