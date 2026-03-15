@@ -1,0 +1,76 @@
+In Spring Boot, Spring Profiles are used to manage different configurations for different environments.
+
+Example environments:
+
+Development
+Testing
+Production
+
+Each environment can have different database settings, ports, or properties.
+
+Why Spring Profiles Are Used
+
+Suppose your application runs in:
+
+Environment	Database
+Development	H2
+Testing	MySQL
+Production	Oracle
+
+Instead of changing application.properties every time, we use profiles.
+
+1️⃣ Profile-Specific Property Files
+
+Spring Boot allows separate configuration files.
+
+Example:
+
+application-dev.properties
+application-test.properties
+application-prod.properties
+Example
+application.properties
+spring.profiles.active=dev
+application-dev.properties
+server.port=8081
+spring.datasource.url=jdbc:h2:mem:testdb
+application-test.properties
+server.port=8082
+spring.datasource.url=jdbc:mysql://localhost:3306/testdb
+application-prod.properties
+server.port=8083
+spring.datasource.url=jdbc:oracle:thin:@localhost:1521:xe
+2️⃣ Activating a Profile
+
+In application.properties:
+
+spring.profiles.active=dev
+
+or from command line:
+
+--spring.profiles.active=prod
+3️⃣ Using @Profile Annotation
+
+We can also activate beans based on profiles.
+
+@Configuration
+@Profile("dev")
+public class DevConfig {
+
+}
+
+This configuration will run only in dev profile.
+
+Example Flow
+Application Start
+       ↓
+Spring reads active profile
+       ↓
+Loads corresponding properties
+       ↓
+Runs application with that configuration
+Advantages
+Advantage	Explanation
+Environment separation	dev/test/prod configs
+Easy configuration	no manual changes
+Cleaner project	organized properties
