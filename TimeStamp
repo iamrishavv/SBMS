@@ -1,0 +1,72 @@
+Timestamping means automatically storing date and time information for database records.
+
+Common fields:
+
+created_date → when record is created
+
+updated_date → when record is modified
+
+This feature is supported in Spring Data JPA.
+
+1️⃣ Enable JPA Auditing
+
+Add annotation in the main class.
+
+@SpringBootApplication
+@EnableJpaAuditing
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}
+
+@EnableJpaAuditing enables automatic timestamp tracking.
+
+2️⃣ Entity Class with Timestamp
+import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+@Entity
+@EntityListeners(AuditingEntityListener.class)
+public class Employee {
+
+    @Id
+    @GeneratedValue
+    private Integer empId;
+
+    private String empName;
+
+    @CreatedDate
+    private LocalDateTime createdDate;
+
+    @LastModifiedDate
+    private LocalDateTime updatedDate;
+
+}
+3️⃣ What Happens
+
+When a new record is inserted:
+
+createdDate  → automatically filled
+updatedDate  → automatically filled
+
+When record is updated:
+
+updatedDate → automatically updated
+Example Table
+emp_id	emp_name	created_date	updated_date
+1	Rishav	2026-03-13 10:10	2026-03-13 10:10
+
+After update:
+
+emp_id	emp_name	created_date	updated_date
+1	Rishav	2026-03-13 10:10	2026-03-13 11:30
+Common Timestamp Annotations
+Annotation	Purpose
+@CreatedDate	stores creation time
+@LastModifiedDate	stores last update time
