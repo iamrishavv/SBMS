@@ -72,23 +72,76 @@
 
 </project>
 2)Controlller
-
+(a)
 package com.rishav.webmvc.web_mvc.controller;
 
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.time.LocalDateTime;
 
 @Controller
+@RequestMapping("/c1")
 public class HomeController {
     @GetMapping("/home")
     public String showHome(Model model){
         model.addAttribute("name","Rishav");
         return "home";
     }
+    // Method 2: Date
+    @GetMapping("/welcome")
+    public String showWelcome(Model model) {
+        model.addAttribute("date", LocalDateTime.now());
+        return "welcome";
+    }
+}
+(b)
+package com.rishav.webmvc.web_mvc.controller;
+
+import com.rishav.webmvc.web_mvc.User;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/c2")
+public class UserController {
+    @GetMapping("/user")
+    public String user(Model model) {
+        User user = new User();
+        user.setId(101);
+        user.setName("Rishav");
+        user.setEmail("rishav@gmail.com");
+
+        model.addAttribute("user", user);
+        return "user";
+    }
+
+}
+3) User class
+package com.rishav.webmvc.web_mvc;
+
+public class User {
+
+    private int id;
+    private String name;
+    private String email;
+
+    // getters & setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 }
 
-3) Main method
+4) Main method
 package com.rishav.webmvc.web_mvc;
 
 import org.springframework.boot.SpringApplication;
@@ -102,7 +155,83 @@ public class WebMvcApplication {
     }
 
 }
-4) thymeleaf html file
+5) thymeleaf html file
+(a)User.html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Details</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <div class="card p-4 shadow">
+
+        <h2 class="text-center text-primary mb-4">User Details</h2>
+
+        <table class="table table-bordered text-center">
+            <tr class="table-dark">
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+
+            <tr>
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.name}"></td>
+                <td th:text="${user.email}"></td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+(b)Welcome.html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Welcome</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg p-4 text-center">
+
+        <h1 class="text-primary mb-3">Welcome 🎉</h1>
+
+        <p class="fs-5">
+            <span class="fw-bold">Today Date:</span>
+            <span th:text="${date}" class="text-success"></span>
+        </p>
+
+        <a href="/home" class="btn btn-primary mt-3">Go to Home</a>
+
+    </div>
+
+</div>
+
+<!-- Bootstrap JS (optional) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+(C)home.html
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="eng">
 <head>
