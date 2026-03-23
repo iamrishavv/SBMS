@@ -1,0 +1,68 @@
+🔷 🔥 What is a Query Param?
+
+👉 It is data passed in URL after ?
+
+http://localhost:8080/books?keyword=java
+
+👉 Here:
+
+keyword = java
+🔷 🔥 How to Read Query Param in Spring
+
+👉 Use @RequestParam
+
+✅ Example (Your Book App)
+@GetMapping("/books")
+public String getBooks(@RequestParam(required = false) String keyword,
+                       Model model) {
+
+    List<Book> books = service.searchBooks(keyword);
+
+    model.addAttribute("books", books);
+    model.addAttribute("keyword", keyword);
+
+    return "books";
+}
+🔷 🔥 What @RequestParam Does
+
+👉 It takes value from URL:
+
+/books?keyword=java
+
+👉 And assigns:
+
+keyword = "java"
+🔷 🔥 Required vs Optional
+Required (default)
+@RequestParam String keyword
+
+❌ Error if missing
+
+Optional ✅
+@RequestParam(required = false) String keyword
+
+✔ Works even if no param
+
+🔷 🔥 Default Value
+@RequestParam(defaultValue = "") String keyword
+🔷 🔥 Multiple Query Params
+/books?name=java&price=100
+@GetMapping("/books")
+public String getBooks(@RequestParam String name,
+                       @RequestParam int price) {
+}
+🔷 🔥 HTML Form (GET method)
+<form method="get" action="/books">
+    <input type="text" name="keyword" placeholder="Search"/>
+    <button type="submit">Search</button>
+</form>
+What is this?
+
+👉 This automatically sends query param
+
+🔷 🔥 Flow
+HTML Form → URL (?keyword=java) → @RequestParam → Controller
+🔥 Real Example
+URL	Output
+/books	all books
+/books?keyword=java	filtered books
