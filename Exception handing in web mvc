@@ -1,0 +1,105 @@
+🔷 🔥 What is Exception Handling in MVC?
+
+👉 When an error occurs (DB error, null, etc.)
+👉 We handle it gracefully instead of showing crash/whitelabel page
+
+🔴 Without Exception Handling
+Whitelabel Error Page ❌
+
+👉 Bad user experience
+
+🔷 🔥 Types of Exception Handling in Spring MVC
+Type	Use
+Local (@ExceptionHandler)	Inside controller
+Global (@ControllerAdvice)	For whole app ✅
+Custom Exception	Business logic errors
+🔷 🧩 1. LOCAL Exception Handling
+
+👉 Inside same controller
+
+@Controller
+public class BookController {
+
+    @ExceptionHandler(Exception.class)
+    public String handleError(Exception ex, Model model) {
+
+        model.addAttribute("msg", ex.getMessage());
+
+        return "error";
+    }
+}
+🔷 🧩 2. GLOBAL Exception Handling (BEST PRACTICE 🔥)
+
+👉 Create a separate class
+
+package com.rishav.web_mvc_book_app.exception;
+
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(Exception.class)
+    public String handleAllExceptions(Exception ex, Model model) {
+
+        model.addAttribute("msg", "Something went wrong!");
+
+        return "error"; // error.html
+    }
+}
+🔷 🧩 3. Error Page (error.html)
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error</title>
+</head>
+<body>
+
+<h2 style="color:red;">Error Occurred ❌</h2>
+<p th:text="${msg}"></p>
+
+<a href="/books">Go Back</a>
+
+</body>
+</html>
+What is this?
+🔷 🔥 Custom Exception (Advanced)
+public class BookNotFoundException extends RuntimeException {
+    public BookNotFoundException(String msg) {
+        super(msg);
+    }
+}
+@ExceptionHandler(BookNotFoundException.class)
+public String handleBookNotFound(BookNotFoundException ex, Model model) {
+
+    model.addAttribute("msg", ex.getMessage());
+
+    return "error";
+}
+🔷 🔥 Flow
+Exception → Controller → @ControllerAdvice → error.html
+🔷 🔥 Real Example in Your App
+
+👉 If DB fails or ID not found:
+
+Instead of crash ❌
+👉 Show:
+
+Something went wrong!
+🔥 Interview Answer
+
+👉 “Exception handling in Spring MVC is implemented using @ExceptionHandler and @ControllerAdvice to provide centralized error handling and improve user experience.”
+
+🚀 Bonus (REST API Case)
+
+👉 Use @RestControllerAdvice
+
+@RestControllerAdvice
+public class GlobalHandler {
+
+    @ExceptionHandler(Exception.class)
+    public String handle(Exception ex) {
+        return "Error occurred";
+    }
+}
