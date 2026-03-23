@@ -1,0 +1,60 @@
+Great 👍 now let’s clearly understand Path Variable in Spring MVC (very important 🔥)
+
+🔷 🔥 What is Path Variable?
+
+👉 Data passed inside URL path, not after ?
+
+http://localhost:8080/book/101
+
+👉 Here:
+
+101 = path variable
+🔷 🔥 How to Use in Spring
+
+👉 Use @PathVariable
+
+✅ Example (Your Book App - Delete)
+@GetMapping("/delete/{id}")
+public String deleteBook(@PathVariable int id) {
+
+    service.deleteBook(id);
+
+    return "redirect:/books";
+}
+🔥 URL Call
+/delete/5
+
+👉 Spring does:
+
+id = 5
+🔷 🔥 Example (Edit)
+@GetMapping("/edit/{id}")
+public String editBook(@PathVariable int id, Model model) {
+
+    Book book = service.getBookById(id);
+
+    model.addAttribute("book", book);
+
+    return "books";
+}
+🔷 🔥 HTML Link
+<a th:href="@{'/edit/' + ${b.id}}">Edit</a>
+<a th:href="@{'/delete/' + ${b.id}}">Delete</a>
+What is this?
+🔷 🔥 Multiple Path Variables
+/books/101/java
+@GetMapping("/books/{id}/{name}")
+public String get(@PathVariable int id,
+                  @PathVariable String name) {
+}
+🔷 🔥 Custom Name Mapping
+@GetMapping("/book/{id}")
+public String get(@PathVariable("id") int bookId) {
+}
+🔷 🔥 Flow
+URL → /edit/5 → @PathVariable → id=5 → Controller
+🔥 PathVariable vs QueryParam
+Feature	PathVariable	RequestParam
+URL	/book/101	/book?id=101
+Usage	Resource ID	Filters/search
+Annotation	@PathVariable	@RequestParam
